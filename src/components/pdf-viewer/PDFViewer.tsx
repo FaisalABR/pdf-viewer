@@ -14,16 +14,6 @@ const PDFViewer = ({ fileUrl }) => {
 	const viewerContainer = useRef<HTMLDivElement>(null);
 	const viewer = useRef<HTMLDivElement>(null);
 
-	const debounce = (func, delay) => {
-		let timeoutId;
-		return (...args) => {
-			clearTimeout(timeoutId);
-			timeoutId = setTimeout(() => {
-				func(...args);
-			}, delay);
-		};
-	};
-
 	useEffect(() => {
 		const eventBus = new pdfjsViewer.EventBus();
 		const pdfLinkService = new pdfjsViewer.PDFLinkService({ eventBus });
@@ -74,16 +64,14 @@ const PDFViewer = ({ fileUrl }) => {
 	useEffect(() => {
 		const container = viewerContainer.current;
 		if (container && pdfViewerRef.current) {
-			const handleScroll = debounce(() => {
+			const handleScroll = () => {
 				const viewer = pdfViewerRef.current;
 				if (viewer) {
 					// Update halaman saat ini
-					const newPage = viewer.currentPageNumber;
-					if (newPage !== currentPage) {
-						setCurrentPage(newPage);
-					}
+
+					setCurrentPage(viewer.currentPageNumber);
 				}
-			}, 100);
+			};
 
 			container.addEventListener("scroll", handleScroll);
 
